@@ -74,13 +74,14 @@ function insert_ip_tables() {
 check_root
 
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PKG|grep "install ok installed")
+echo "$PKG_OK"
 echo Checking for $REQUIRED_PKG: $PKG_OK
 if [ "" = "$PKG_OK" ]; then
   echo "No $REQUIRED_PKG. Setting up $REQUIRED_PKG."
   apt --yes install $REQUIRED_PKG
   sleep 10
 fi
-
+sleep 10
 choose_primary_interface
 clear
 choose_internal_interface
