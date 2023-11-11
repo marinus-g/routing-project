@@ -9,7 +9,7 @@ PKG_OK="TEMP"
 
 function remove_dialog_package() {
   if [ "" = "$PKG_OK" ]; then
-    apt remove $REQURED_PACAKGE
+    apt remove $REQUIRED_PACAKGE
   fi
 }
 
