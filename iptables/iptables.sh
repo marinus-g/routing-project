@@ -4,6 +4,7 @@ primary_interface=""
 internal_interface=""
 interfaces=($(ls /sys/class/net))
 
+
 function check_root() {
 	if [ "$USER" != "root" ];
 	then
@@ -11,6 +12,7 @@ function check_root() {
 		exit
 fi
 }
+
 
 function choose_primary_interface() {
 	doptions=()
@@ -32,6 +34,7 @@ function choose_primary_interface() {
 	fi
 }
 
+
 function choose_internal_interface() {
 	doptions=();
 	for ((i=0; i <${#interfaces[@]}; i++)) do
@@ -51,6 +54,7 @@ function choose_internal_interface() {
 	fi
 }
 
+
 function check_if_interfaces_are_equal() {
 	if [ "$primary_interface" == "$internal_interface" ];
 	then
@@ -60,13 +64,20 @@ function check_if_interfaces_are_equal() {
 	fi
 }
 
-check_root
-choose_primary_interface
+
+function insert_ip_tables() {
+	$1 -t nat -A POSTROUTING -o "$primary_interface" -j MASQUERADE
+	$1 -A FORWARD -i "$primary_interface" -o "$internal_interface" -m state --state RELATED,ESTABLISHED -j ACCEPT
+	$1 -A FORWARD -i "$internal_interface" -o "$primary_interface" -j ACCEPT
+}
+
 clear
 choose_internal_interface
 clear
 check_if_interfaces_are_equal
+
 # ipv4 tables
-iptables -t nat -A POSTROUTING -o "$primary_interface" -j MASQUERADE
-iptables -A FORWARD -i "$primary_interface" -o "$internal_interface" -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -i "$internal_interface" -o "$primary_interface" -j ACCEPT
+insert_ip_tables "iptables"
+#iptables -t nat -A POSTROUTING -o "$primary_interface" -j MASQUERADE
+#iptables -A FORWARD -i "$primary_interface" -o "$internal_interface" -m state --state RELATED,ESTABLISHED -j ACCEPT
+#iptables -A FORWARD -i "$internal_interface" -o "$primary_interface" -j ACCEPT
