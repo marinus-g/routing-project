@@ -94,7 +94,7 @@ choose_internal_interface
 clear
 check_if_interfaces_are_equal
 # ipv4 tables
-insert_ip_tables "iptable"
+insert_ip_tables "iptables"
 remove_dialog_package
 clear
 echo "Applied iptable rules!"
