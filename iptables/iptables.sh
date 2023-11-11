@@ -86,7 +86,6 @@ check_root
 PKG_OK=$(dpkg-query -W --showformat='${Status}\n' $REQUIRED_PACKAGE|grep "install ok installed")
 if [ "" = "$PKG_OK" ]; then
   apt --yes install $REQUIRED_PACKAGE
-  sleep 3
 fi
 choose_primary_interface
 clear
@@ -96,7 +95,6 @@ check_if_interfaces_are_equal
 # ipv4 tables
 insert_ip_tables "iptables"
 remove_dialog_package
-clear
 echo "Applied iptable rules!"
 #iptables -t nat -A POSTROUTING -o "$primary_interface" -j MASQUERADE
 #iptables -A FORWARD -i "$primary_interface" -o "$internal_interface" -m state --state RELATED,ESTABLISHED -j ACCEPT
