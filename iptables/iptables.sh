@@ -7,11 +7,16 @@ interfaces=($(ls /sys/class/net))
 REQUIRED_PACKAGE="dialog"
 PKG_OK="TEMP"
 
+function remove_dialog_package() {
+  if [ "" = "$PKG_OK" ]; then
+    apt remove $REQURED_PACAKGE
+  fi
+}
+
 function check_root() {
   if [ "$USER" != "root" ];
   then
     echo "Please execute this script as root!"
-    remove_dialog_package
     exit
   fi
 }
@@ -75,13 +80,6 @@ function insert_ip_tables() {
   $1 -t nat -A POSTROUTING -o "$primary_interface" -j MASQUERADE
   $1 -A FORWARD -i "$primary_interface" -o "$internal_interface" -m state --state RELATED,ESTABLISHED -j ACCEPT
   $1 -A FORWARD -i "$internal_interface" -o "$primary_interface" -j ACCEPT
-}
-
-
-function remove_dialog_package() {
-  if [ "" = "$PKG_OK" ]; then
-    apt remove $REQURED_PACAKGE
-  fi
 }
 
 check_root
