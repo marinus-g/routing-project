@@ -78,6 +78,7 @@ function check_if_interfaces_are_equal() {
 
 function insert_ip_tables() {
 	for ((i = 0; i < "4"; i++)); do
+	  echo "$primary_interface:$i"
 	  $1 -t nat -A POSTROUTING -o "$primary_interface:$i" -j MASQUERADE
   	  $1 -A FORWARD -i "$primary_interface:$i" -o "$internal_interface" -m state --state RELATED,ESTABLISHED -j ACCEPT
   	  $1 -A FORWARD -i "$internal_interface" -o "$primary_interface:$i" -j ACCEPT
